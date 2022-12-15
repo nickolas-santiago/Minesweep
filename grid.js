@@ -60,6 +60,7 @@ app.Grid = {
 				a_tile.row = row;
 				a_tile.col = col;
 				a_tile.reveal_status = "unrevealed";
+				a_tile.flagged = false;
 				//---set tile type
 				if(this.mine_locs.includes(tile_number))
 				{
@@ -168,111 +169,98 @@ app.Grid = {
 		}
 	},
 	
-	findEmptyAndNumberTiles: function(tile_, adj_empty_tiles_array_, adj_number_tiles_array_, tiles_to_reveal_)
+	findEmptyAndNumberTiles: function(tile_, tiles_to_reveal_)
 	{
 		var self = this;
+		//---check surrounding tiles and reveal them; if they are an empty tile, run this function again
 		if(self.tile_array[tile_].row > 0)
 		{
 			if(self.tile_array[tile_].col > 0)
 			{
-				if(self.tile_array[(tile_ - self.num_of_cols) - 1].type == "empty")
+				if((self.tile_array[(tile_ - self.num_of_cols) - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ - self.num_of_cols) - 1]) == false))
 				{
-					adj_empty_tiles_array_.push(self.tile_array[(tile_ - self.num_of_cols) - 1]);
 					tiles_to_reveal_.push(self.tile_array[(tile_ - self.num_of_cols) - 1]);
-				}
-				if(self.tile_array[(tile_ - self.num_of_cols) - 1].type == "number")
-				{
-					adj_number_tiles_array_.push(self.tile_array[(tile_ - self.num_of_cols) - 1]);
-					tiles_to_reveal_.push(self.tile_array[(tile_ - self.num_of_cols) - 1]);
+					if(self.tile_array[(tile_ - self.num_of_cols) - 1].type == "empty")
+					{
+						self.findEmptyAndNumberTiles(((tile_ - self.num_of_cols) - 1), tiles_to_reveal_);
+					}
 				}
 			}
 			if(self.tile_array[tile_].col < (self.num_of_cols - 1))
 			{
-				if(self.tile_array[(tile_ - self.num_of_cols) + 1].type == "empty")
+				if((self.tile_array[(tile_ - self.num_of_cols) + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ - self.num_of_cols) + 1]) == false))
 				{
-					adj_empty_tiles_array_.push(self.tile_array[(tile_ - self.num_of_cols) + 1]);
 					tiles_to_reveal_.push(self.tile_array[(tile_ - self.num_of_cols) + 1]);
-				}
-				if(self.tile_array[(tile_ - self.num_of_cols) + 1].type == "number")
-				{
-					adj_number_tiles_array_.push(self.tile_array[(tile_ - self.num_of_cols) + 1]);
-					tiles_to_reveal_.push(self.tile_array[(tile_ - self.num_of_cols) + 1]);
+					if(self.tile_array[(tile_ - self.num_of_cols) + 1].type == "empty")
+					{
+						self.findEmptyAndNumberTiles(((tile_ - self.num_of_cols) + 1), tiles_to_reveal_);
+					}
 				}
 			}
-			if(self.tile_array[tile_ - self.num_of_cols].type == "empty")
+			if((self.tile_array[tile_ - self.num_of_cols].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ - self.num_of_cols]) == false))
 			{
-				adj_empty_tiles_array_.push(self.tile_array[tile_ - self.num_of_cols]);
 				tiles_to_reveal_.push(self.tile_array[tile_ - self.num_of_cols]);
-			}
-			if(self.tile_array[tile_ - self.num_of_cols].type == "number")
-			{
-				adj_number_tiles_array_.push(self.tile_array[tile_ - self.num_of_cols]);
-				tiles_to_reveal_.push(self.tile_array[tile_ - self.num_of_cols]);
+				if(self.tile_array[tile_ - self.num_of_cols].type == "empty")
+				{
+					self.findEmptyAndNumberTiles((tile_ - self.num_of_cols), tiles_to_reveal_);
+				}
 			}
 		}
 		if(self.tile_array[tile_].row < (self.num_of_rows - 1))
 		{
 			if(self.tile_array[tile_].col > 0)
 			{
-				if(self.tile_array[(tile_ + self.num_of_cols) - 1].type == "empty")
+				
+				if((self.tile_array[(tile_ + self.num_of_cols) - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ + self.num_of_cols) - 1]) == false))
 				{
-					adj_empty_tiles_array_.push(self.tile_array[(tile_ + self.num_of_cols) - 1]);
 					tiles_to_reveal_.push(self.tile_array[(tile_ + self.num_of_cols) - 1]);
-				}
-				if(self.tile_array[(tile_ + self.num_of_cols) - 1].type == "number")
-				{
-					adj_number_tiles_array_.push(self.tile_array[(tile_ + self.num_of_cols) - 1]);
-					tiles_to_reveal_.push(self.tile_array[(tile_ + self.num_of_cols) - 1]);
+					if(self.tile_array[(tile_ + self.num_of_cols) - 1].type == "empty")
+					{
+						self.findEmptyAndNumberTiles(((tile_ + self.num_of_cols) - 1), tiles_to_reveal_);
+					}
 				}
 			}
 			if(self.tile_array[tile_].col < (self.num_of_cols - 1))
 			{
-				if(self.tile_array[(tile_ + self.num_of_cols) + 1].type == "empty")
+				
+				if((self.tile_array[(tile_ + self.num_of_cols) + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ + self.num_of_cols) + 1]) == false))
 				{
-					adj_empty_tiles_array_.push(self.tile_array[(tile_ + self.num_of_cols) + 1]);
 					tiles_to_reveal_.push(self.tile_array[(tile_ + self.num_of_cols) + 1]);
-				}
-				if(self.tile_array[(tile_ + self.num_of_cols) + 1].type == "number")
-				{
-					adj_number_tiles_array_.push(self.tile_array[(tile_ + self.num_of_cols) + 1]);
-					tiles_to_reveal_.push(self.tile_array[(tile_ + self.num_of_cols) + 1]);
+					if(self.tile_array[(tile_ + self.num_of_cols) + 1].type == "empty")
+					{
+						self.findEmptyAndNumberTiles(((tile_ + self.num_of_cols) + 1), tiles_to_reveal_);
+					}
 				}
 			}
-			if(self.tile_array[tile_ + self.num_of_cols].type == "empty")
+			if((self.tile_array[tile_ + self.num_of_cols].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ + self.num_of_cols]) == false))
 			{
-				adj_empty_tiles_array_.push(self.tile_array[tile_ + self.num_of_cols]);
 				tiles_to_reveal_.push(self.tile_array[tile_ + self.num_of_cols]);
-			}
-			if(self.tile_array[tile_ + self.num_of_cols].type == "number")
-			{
-				adj_number_tiles_array_.push(self.tile_array[tile_ + self.num_of_cols]);
-				tiles_to_reveal_.push(self.tile_array[tile_ + self.num_of_cols]);
+				if(self.tile_array[tile_ + self.num_of_cols].type == "empty")
+				{
+					self.findEmptyAndNumberTiles((tile_ + self.num_of_cols), tiles_to_reveal_);
+				}
 			}
 		}
 		if(self.tile_array[tile_].col > 0)
 		{
-			if(self.tile_array[tile_ - 1].type == "empty")
+			if((self.tile_array[tile_ - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ - 1]) == false))
 			{
-					adj_empty_tiles_array_.push(self.tile_array[tile_ - 1]);
-					tiles_to_reveal_.push(self.tile_array[tile_ - 1]);
-			}
-			if(self.tile_array[tile_ - 1].type == "number")
-			{
-					adj_number_tiles_array_.push(self.tile_array[tile_ - 1]);
-					tiles_to_reveal_.push(self.tile_array[tile_ - 1]);
+				tiles_to_reveal_.push(self.tile_array[tile_ - 1]);
+				if(self.tile_array[tile_ - 1].type == "empty")
+				{
+					self.findEmptyAndNumberTiles((tile_ - 1), tiles_to_reveal_);
+				}
 			}
 		}
 		if(self.tile_array[tile_].col < (self.num_of_cols - 1))
 		{
-			if(self.tile_array[tile_ + 1].type == "empty")
+			if((self.tile_array[tile_ + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ + 1]) == false))
 			{
-					adj_empty_tiles_array_.push(self.tile_array[tile_ + 1]);
-					tiles_to_reveal_.push(self.tile_array[tile_ + 1]);
-			}
-			if(self.tile_array[tile_ + 1].type == "number")
-			{
-					adj_number_tiles_array_.push(self.tile_array[tile_ + 1]);
-					tiles_to_reveal_.push(self.tile_array[tile_ + 1]);
+				tiles_to_reveal_.push(self.tile_array[tile_ + 1]);
+				if(self.tile_array[tile_ + 1].type == "empty")
+				{
+					self.findEmptyAndNumberTiles((tile_ + 1), tiles_to_reveal_);
+				}
 			}
 		}
 	},
@@ -333,6 +321,13 @@ app.Grid = {
 				ctx.fillStyle = "white";
 				ctx.fillRect(self.tile_array[tile].pos.x, self.tile_array[tile].pos.y, self.tile_length, self.tile_length);
 				ctx.restore();
+				if(self.tile_array[tile].flagged == true)
+				{
+					ctx.save();
+					ctx.fillStyle = "black";
+					ctx.fillRect(self.tile_array[tile].pos.x, self.tile_array[tile].pos.y, self.tile_length, self.tile_length);
+					ctx.restore();
+				}
 			}
 			
 			//---check each tile to see if the mouse is hovering over it
@@ -341,39 +336,50 @@ app.Grid = {
 				//---if the mouse is clicked on an unrevelaed tile and ...
 				if(mousedown == true)
 				{
-					if(self.tile_array[tile].reveal_status == "unrevealed")
+					if(FLAGGING == false)
 					{
-						//---... the tile is a number tile, reveal it
-						if(self.tile_array[tile].type == "number")
+						if(self.tile_array[tile].reveal_status == "unrevealed")
 						{
-							self.tile_array[tile].reveal_status = "revealed";
-							console.log(self.tile_array[tile]);
-						}
-						//---... the tile is a mine tile, reveal all mines and games ends
-						else if(self.tile_array[tile].type == "mine")
-						{
-							self.endGame();
-						}
-						//---... the tile is an empty tile, reveal it and all adj number and empty tiles 
-						else if(self.tile_array[tile].type == "empty")
-						{
-							console.log("empty");
-							var adj_empty_tiles_array = [];
-							var adj_number_tiles_array = [];
-							var tiles_to_reveal = [];
-							self.findEmptyAndNumberTiles(tile, adj_empty_tiles_array, adj_number_tiles_array, tiles_to_reveal);
-							tiles_to_reveal.push(self.tile_array[tile]);
-							
-							//console.log(adj_empty_tiles_array);
-							//console.log(adj_number_tiles_array);
-							
-							for(var tile_ = 0; tile_ < tiles_to_reveal.length; tile_++)
+							//---... the tile is a number tile, reveal it
+							if(self.tile_array[tile].type == "number")
 							{
-								tiles_to_reveal[tile_].reveal_status = "revealed";
+								self.tile_array[tile].reveal_status = "revealed";
+								console.log(self.tile_array[tile]);
 							}
-							
+							//---... the tile is a mine tile, reveal all mines and games ends
+							else if(self.tile_array[tile].type == "mine")
+							{
+								self.endGame();
+							}
+							//---... the tile is an empty tile, reveal it and all adj number and empty tiles 
+							else if(self.tile_array[tile].type == "empty")
+							{
+								console.log("empty");
+								var tiles_to_reveal = [];
+								self.findEmptyAndNumberTiles(tile, tiles_to_reveal);
+								tiles_to_reveal.push(self.tile_array[tile]);
+								//---now reveal all the tiles
+								for(var tile_ = 0; tile_ < tiles_to_reveal.length; tile_++)
+								{
+									tiles_to_reveal[tile_].reveal_status = "revealed";
+								}
+							}
 						}
 					}
+					else
+					{
+						//---when flagging is true, change wether or not a tile is flagged
+						console.log(self.tile_array[tile]);
+						if(self.tile_array[tile].flagged == false)
+						{
+							self.tile_array[tile].flagged = true;
+						}
+						else
+						{
+							self.tile_array[tile].flagged = true;
+						}
+					}
+					mousedown = false;
 				}
 			}
         }		
