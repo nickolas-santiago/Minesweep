@@ -11,6 +11,11 @@ function getMouse(canvas, evt)
         y: evt.clientY - canvas_bounding_box.top
     };
 }
+var mouse_pos = {
+		x: 0,
+		y: 0
+}
+var mousedown = false;
 
 window.onload = function()
 {
@@ -19,5 +24,21 @@ window.onload = function()
     canvas.width = "200";
     canvas.height = "200";
     console.log("hello");
-	app.Grid.init();
+	//---setting mouse events
+	this.mousedown = false;
+	canvas.addEventListener('mousemove', function(evt)
+	{
+		mouse_pos = getMouse(canvas, evt);
+	});
+	canvas.addEventListener('mousedown', function(evt)
+	{
+		mousedown = true;
+		console.log("yerrrrr");
+	});
+	canvas.addEventListener('mouseup', function(evt)
+	{
+		mousedown = false;
+	});
+        
+	app.Grid.init(20,5,8,5,30,30);
 }
