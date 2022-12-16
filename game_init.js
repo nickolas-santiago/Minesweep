@@ -16,17 +16,16 @@ var mouse_pos = {
 		y: 0
 }
 var mousedown = false;
-var FLAGGING = true;
 
 function toggle_flagging()
 {
-	if(FLAGGING == false)
+	if(app.Game.flagging == false)
 	{
-		FLAGGING = true;
+		app.Game.flagging = true;
 	}
 	else
 	{
-		FLAGGING = false;
+		app.Game.flagging = false;
 	}
 }
 window.onload = function()
@@ -38,7 +37,8 @@ window.onload = function()
     console.log("hello");
 	//---setting mouse events
 	
-	app.Grid.init(20,5,8,5,30,30);
+	//app.Grid.init(20,5,8,5,30,30);
+	app.Game.gameNew();
 	this.mousedown = false;
 	canvas.addEventListener('mousemove', function(evt)
 	{
@@ -47,7 +47,6 @@ window.onload = function()
 	canvas.addEventListener('click', function(evt)
 	{
 		mousedown = true;
-		console.log("flagging: " + FLAGGING);
 	});
 	canvas.addEventListener('mousedown', function(evt)
 	{

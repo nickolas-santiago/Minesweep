@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 var app = app || {};
 app.Grid = {
     //Properties
@@ -16,9 +16,7 @@ app.Grid = {
 	tile_array: [],
 	//---related to mines
 	num_of_mines: undefined,
-	mine_locs: [],
-	//---track mouse position within the grid
-	
+	mine_locs: [],	
 	
 	//Methods
 	init: function(tile_length_, num_of_cols_, num_of_rows_, num_of_mines_, pos_x_, pos_y_)
@@ -36,8 +34,6 @@ app.Grid = {
 		this.width = (this.num_of_cols * this.tile_length);
 		this.height = (this.num_of_rows * this.tile_length);
 		this.total_num_of_tiles = (this.num_of_cols * this.num_of_rows);
-		
-		console.log(this.width);
 		
 		//---generate mine locations
 		for(let m = 0; m < this.num_of_mines; m++)
@@ -157,16 +153,19 @@ app.Grid = {
 		return possible_loc;
 	},
 	
-	endGame: function()
+	loseGame: function()
 	{
 		var self = this;
-		console.log(self.mine_locs);
 		for(var tile = 0; tile < self.mine_locs.length; tile++)
 		{
-			console.log(self.mine_locs[tile]);
-			console.log(self.tile_array[self.mine_locs[tile]]);
 			self.tile_array[self.mine_locs[tile]].reveal_status = "revealed";
 		}
+		app.Game.gameLose();
+	},
+	
+	winGame: function()
+	{
+		app.Game.gameWin();
 	},
 	
 	findEmptyAndNumberTiles: function(tile_, tiles_to_reveal_)
@@ -177,7 +176,7 @@ app.Grid = {
 		{
 			if(self.tile_array[tile_].col > 0)
 			{
-				if((self.tile_array[(tile_ - self.num_of_cols) - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ - self.num_of_cols) - 1]) == false))
+				if((self.tile_array[(tile_ - self.num_of_cols) - 1].reveal_status == "unrevealed") && (self.tile_array[(tile_ - self.num_of_cols) - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ - self.num_of_cols) - 1]) == false))
 				{
 					tiles_to_reveal_.push(self.tile_array[(tile_ - self.num_of_cols) - 1]);
 					if(self.tile_array[(tile_ - self.num_of_cols) - 1].type == "empty")
@@ -188,7 +187,7 @@ app.Grid = {
 			}
 			if(self.tile_array[tile_].col < (self.num_of_cols - 1))
 			{
-				if((self.tile_array[(tile_ - self.num_of_cols) + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ - self.num_of_cols) + 1]) == false))
+				if((self.tile_array[(tile_ - self.num_of_cols) + 1].reveal_status == "unrevealed") && (self.tile_array[(tile_ - self.num_of_cols) + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ - self.num_of_cols) + 1]) == false))
 				{
 					tiles_to_reveal_.push(self.tile_array[(tile_ - self.num_of_cols) + 1]);
 					if(self.tile_array[(tile_ - self.num_of_cols) + 1].type == "empty")
@@ -197,7 +196,7 @@ app.Grid = {
 					}
 				}
 			}
-			if((self.tile_array[tile_ - self.num_of_cols].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ - self.num_of_cols]) == false))
+			if((self.tile_array[tile_ - self.num_of_cols].reveal_status == "unrevealed") && (self.tile_array[tile_ - self.num_of_cols].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ - self.num_of_cols]) == false))
 			{
 				tiles_to_reveal_.push(self.tile_array[tile_ - self.num_of_cols]);
 				if(self.tile_array[tile_ - self.num_of_cols].type == "empty")
@@ -211,7 +210,7 @@ app.Grid = {
 			if(self.tile_array[tile_].col > 0)
 			{
 				
-				if((self.tile_array[(tile_ + self.num_of_cols) - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ + self.num_of_cols) - 1]) == false))
+				if((self.tile_array[(tile_ + self.num_of_cols) - 1].reveal_status == "unrevealed") && (self.tile_array[(tile_ + self.num_of_cols) - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ + self.num_of_cols) - 1]) == false))
 				{
 					tiles_to_reveal_.push(self.tile_array[(tile_ + self.num_of_cols) - 1]);
 					if(self.tile_array[(tile_ + self.num_of_cols) - 1].type == "empty")
@@ -223,7 +222,7 @@ app.Grid = {
 			if(self.tile_array[tile_].col < (self.num_of_cols - 1))
 			{
 				
-				if((self.tile_array[(tile_ + self.num_of_cols) + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ + self.num_of_cols) + 1]) == false))
+				if((self.tile_array[(tile_ + self.num_of_cols) + 1].reveal_status == "unrevealed") && (self.tile_array[(tile_ + self.num_of_cols) + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[(tile_ + self.num_of_cols) + 1]) == false))
 				{
 					tiles_to_reveal_.push(self.tile_array[(tile_ + self.num_of_cols) + 1]);
 					if(self.tile_array[(tile_ + self.num_of_cols) + 1].type == "empty")
@@ -232,7 +231,7 @@ app.Grid = {
 					}
 				}
 			}
-			if((self.tile_array[tile_ + self.num_of_cols].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ + self.num_of_cols]) == false))
+			if((self.tile_array[tile_ + self.num_of_cols].reveal_status == "unrevealed") && (self.tile_array[tile_ + self.num_of_cols].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ + self.num_of_cols]) == false))
 			{
 				tiles_to_reveal_.push(self.tile_array[tile_ + self.num_of_cols]);
 				if(self.tile_array[tile_ + self.num_of_cols].type == "empty")
@@ -243,7 +242,7 @@ app.Grid = {
 		}
 		if(self.tile_array[tile_].col > 0)
 		{
-			if((self.tile_array[tile_ - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ - 1]) == false))
+			if((self.tile_array[tile_ - 1].reveal_status == "unrevealed") && (self.tile_array[tile_ - 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ - 1]) == false))
 			{
 				tiles_to_reveal_.push(self.tile_array[tile_ - 1]);
 				if(self.tile_array[tile_ - 1].type == "empty")
@@ -254,7 +253,7 @@ app.Grid = {
 		}
 		if(self.tile_array[tile_].col < (self.num_of_cols - 1))
 		{
-			if((self.tile_array[tile_ + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ + 1]) == false))
+			if((self.tile_array[tile_ + 1].reveal_status == "unrevealed") && (self.tile_array[tile_ + 1].flagged == false) && (tiles_to_reveal_.includes(self.tile_array[tile_ + 1]) == false))
 			{
 				tiles_to_reveal_.push(self.tile_array[tile_ + 1]);
 				if(self.tile_array[tile_ + 1].type == "empty")
@@ -331,57 +330,75 @@ app.Grid = {
 			}
 			
 			//---check each tile to see if the mouse is hovering over it
-			if((mouse_pos.x >= self.tile_array[tile].pos.x) && (mouse_pos.x <= (self.tile_array[tile].pos.x + self.tile_length) && (mouse_pos.y >= self.tile_array[tile].pos.y) && (mouse_pos.y <= (self.tile_array[tile].pos.y + self.tile_length))))
+			if(app.Game.can_click)
 			{
-				//---if the mouse is clicked on an unrevelaed tile and ...
-				if(mousedown == true)
+				if((mouse_pos.x >= self.tile_array[tile].pos.x) && (mouse_pos.x <= (self.tile_array[tile].pos.x + self.tile_length) && (mouse_pos.y >= self.tile_array[tile].pos.y) && (mouse_pos.y <= (self.tile_array[tile].pos.y + self.tile_length))))
 				{
-					if(FLAGGING == false)
+					//---if the mouse is clicked on an unrevealed tile and ...
+					if(mousedown == true)
 					{
-						if(self.tile_array[tile].reveal_status == "unrevealed")
+						if(app.Game.flagging == false)
 						{
-							//---... the tile is a number tile, reveal it
-							if(self.tile_array[tile].type == "number")
+							if(self.tile_array[tile].reveal_status == "unrevealed")
 							{
-								self.tile_array[tile].reveal_status = "revealed";
-								console.log(self.tile_array[tile]);
-							}
-							//---... the tile is a mine tile, reveal all mines and games ends
-							else if(self.tile_array[tile].type == "mine")
-							{
-								self.endGame();
-							}
-							//---... the tile is an empty tile, reveal it and all adj number and empty tiles 
-							else if(self.tile_array[tile].type == "empty")
-							{
-								console.log("empty");
-								var tiles_to_reveal = [];
-								self.findEmptyAndNumberTiles(tile, tiles_to_reveal);
-								tiles_to_reveal.push(self.tile_array[tile]);
-								//---now reveal all the tiles
-								for(var tile_ = 0; tile_ < tiles_to_reveal.length; tile_++)
+								//---... the tile is a number tile, reveal it
+								if(self.tile_array[tile].type == "number")
 								{
-									tiles_to_reveal[tile_].reveal_status = "revealed";
+									self.tile_array[tile].reveal_status = "revealed";
+									app.Game.current_points++;
+									console.log("Current Points: "+ app.Game.current_points);
+									console.log(self.tile_array[tile]);
+									//---check if player won
+									if(app.Game.current_points == (this.total_num_of_tiles - this.num_of_mines))
+									{
+										self.winGame();
+									}
+								}
+								//---... the tile is a mine tile, reveal all mines and games ends
+								else if(self.tile_array[tile].type == "mine")
+								{
+									self.loseGame();
+								}
+								//---... the tile is an empty tile, reveal it and all adj number and empty tiles 
+								else if(self.tile_array[tile].type == "empty")
+								{
+									console.log("empty");
+									var tiles_to_reveal = [];
+									tiles_to_reveal.push(self.tile_array[tile]);
+									self.findEmptyAndNumberTiles(tile, tiles_to_reveal);
+									//---now reveal all the tiles
+									for(var tile_ = 0; tile_ < tiles_to_reveal.length; tile_++)
+									{
+										tiles_to_reveal[tile_].reveal_status = "revealed";
+										app.Game.current_points++;
+										console.log("Current Points: "+ app.Game.current_points);
+										console.log(tiles_to_reveal[tile_]);
+										//---check if player won
+										if(app.Game.current_points == (this.total_num_of_tiles - this.num_of_mines))
+										{
+											self.winGame();
+										}
+									}
 								}
 							}
 						}
-					}
-					else
-					{
-						//---when flagging is true, change wether or not a tile is flagged
-						console.log(self.tile_array[tile]);
-						if(self.tile_array[tile].flagged == false)
-						{
-							self.tile_array[tile].flagged = true;
-						}
 						else
 						{
-							self.tile_array[tile].flagged = true;
+							//---when flagging is true, change wether or not a tile is flagged
+							if(self.tile_array[tile].flagged == false)
+							{
+								self.tile_array[tile].flagged = true;
+							}
+							else
+							{
+								self.tile_array[tile].flagged = true;
+							}
 						}
+						mousedown = false;
 					}
-					mousedown = false;
 				}
 			}
-        }		
+			
+		}		
     }
 }
