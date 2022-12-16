@@ -17,6 +17,7 @@ var mouse_pos = {
 }
 var mousedown = false;
 
+//---game buttons
 function toggle_flagging()
 {
 	if(app.Game.flagging == false)
@@ -28,6 +29,15 @@ function toggle_flagging()
 		app.Game.flagging = false;
 	}
 }
+function hint()
+{
+	if(app.Game.current_state == "PLAYING")
+	{
+		console.log("get a hint!");
+		app.Grid.generateHint();
+	}
+}
+
 window.onload = function()
 {
     canvas = document.querySelector("#canvas");

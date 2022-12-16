@@ -13,7 +13,9 @@ app.Grid = {
 		x: undefined,
 		y: undefined
 	},
+	//---related to individual tiles
 	tile_array: [],
+	revealed_tiles: undefined,
 	//---related to mines
 	num_of_mines: undefined,
 	mine_locs: [],	
@@ -34,6 +36,7 @@ app.Grid = {
 		this.width = (this.num_of_cols * this.tile_length);
 		this.height = (this.num_of_rows * this.tile_length);
 		this.total_num_of_tiles = (this.num_of_cols * this.num_of_rows);
+		this.revealed_tiles = 0;
 		
 		//---generate mine locations
 		for(let m = 0; m < this.num_of_mines; m++)
@@ -264,6 +267,25 @@ app.Grid = {
 		}
 	},
 	
+	generateHint()
+	{
+		do{
+			var possible_hint = Math.floor(Math.random() * this.total_num_of_tiles);
+		}while(this.mine_locs.includes(possible_hint));
+		if(this.tile_array[possible_hint].reveal_status == "unrevealed")
+		{
+			this.tile_array[possible_hint].reveal_status = "revealed";
+			this.revealed_tiles++;
+			if(this.revealed_tiles == (this.total_num_of_tiles - this.num_of_mines))
+			{
+				this.winGame();
+			}
+		}
+		else{
+			this.generateHint();
+		}
+	},
+	
 	update: function()
     {
         requestAnimationFrame(this.update.bind(this));
@@ -345,6 +367,7 @@ app.Grid = {
 								if(self.tile_array[tile].type == "number")
 								{
 									self.tile_array[tile].reveal_status = "revealed";
+									self.revealed_tiles++;
 									app.Game.current_points++;
 									console.log("Current Points: "+ app.Game.current_points);
 									console.log(self.tile_array[tile]);
@@ -370,6 +393,7 @@ app.Grid = {
 									for(var tile_ = 0; tile_ < tiles_to_reveal.length; tile_++)
 									{
 										tiles_to_reveal[tile_].reveal_status = "revealed";
+										self.revealed_tiles++;
 										app.Game.current_points++;
 										console.log("Current Points: "+ app.Game.current_points);
 										console.log(tiles_to_reveal[tile_]);

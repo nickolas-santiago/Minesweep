@@ -17,7 +17,7 @@ app.Game = {
 		
 		var num_of_cols =8;
 		var num_of_rows = 5;
-		var num_of_mines = 1;
+		var num_of_mines = 5;
 		app.Grid.init(20,num_of_cols,num_of_rows,num_of_mines,30,30);
 	},
 	
