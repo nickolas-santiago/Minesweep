@@ -1,0 +1,19 @@
+#button_bar
+{
+	display: flex;
+	background-color: red;
+}
+button
+{
+	height: 28px;
+	margin: auto;
+}
+.button_bar_section
+{
+	display: flex;
+	margin-right: 10px;
+}
+.button_bar_item
+{
+	margin-right: 10px;
+}

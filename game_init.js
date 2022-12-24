@@ -31,13 +31,20 @@ function toggle_flagging()
 }
 function hint()
 {
-	if(app.Game.current_state == "PLAYING")
+	console.log(app.Game.can_click);
+	if((app.Game.current_state == "PLAYING") && (app.Game.hint_count > 0))
 	{
 		console.log("get a hint!");
 		app.Grid.generateHint();
+		app.Game.hint_count--;
+		document.getElementById("hint_counter").innerHTML = "Hints Left: " + app.Game.hint_count;
 	}
 }
-
+function new_game()
+{
+	console.log("hello");
+	app.Game.gameNew();
+}
 window.onload = function()
 {
     canvas = document.querySelector("#canvas");
@@ -49,6 +56,7 @@ window.onload = function()
 	
 	//app.Grid.init(20,5,8,5,30,30);
 	app.Game.gameNew();
+	console.log(app.Game.can_click);
 	this.mousedown = false;
 	canvas.addEventListener('mousemove', function(evt)
 	{

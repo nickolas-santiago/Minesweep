@@ -36,6 +36,8 @@ app.Grid = {
 		this.width = (this.num_of_cols * this.tile_length);
 		this.height = (this.num_of_rows * this.tile_length);
 		this.total_num_of_tiles = (this.num_of_cols * this.num_of_rows);
+		this.tile_array = [];
+		this.mine_locs = [];
 		this.revealed_tiles = 0;
 		
 		//---generate mine locations
@@ -404,18 +406,31 @@ app.Grid = {
 										}
 									}
 								}
+								if(self.tile_array[tile].flagged == true)
+								{
+									self.tile_array[tile].flagged = false;
+									app.Game.flag_count++;
+									document.getElementById("flag_counter").innerHTML = "Flags Left: " + app.Game.flag_count;
+								}
 							}
 						}
 						else
 						{
 							//---when flagging is true, change wether or not a tile is flagged
-							if(self.tile_array[tile].flagged == false)
+							if(self.tile_array[tile].reveal_status == "unrevealed")
 							{
-								self.tile_array[tile].flagged = true;
-							}
-							else
-							{
-								self.tile_array[tile].flagged = true;
+								if(self.tile_array[tile].flagged == false)
+								{
+									self.tile_array[tile].flagged = true;
+									app.Game.flag_count--;
+								}
+								else
+								{
+									self.tile_array[tile].flagged = false;
+									app.Game.flag_count++;
+								}
+								console.log(app.Game.flag_count);
+								document.getElementById("flag_counter").innerHTML = "Flags Left: " + app.Game.flag_count;
 							}
 						}
 						mousedown = false;
